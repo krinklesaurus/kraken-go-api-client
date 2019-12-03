@@ -30,8 +30,8 @@ func TestTime(t *testing.T) {
 		t.Errorf("Time() should not return an error, got %s", err)
 	}
 
-	if resp.Unixtime <= 0 {
-		t.Errorf("Time() should return valid Unixtime, got %d", resp.Unixtime)
+	if resp.Result.Unixtime <= 0 {
+		t.Errorf("Time() should return valid Unixtime, got %d", resp.Result.Unixtime)
 	}
 }
 
@@ -47,20 +47,18 @@ func TestAssetPairs(t *testing.T) {
 	if err != nil {
 		t.Errorf("AssetPairs() should not return an error, got %s", err)
 	}
-
-	if resp.XXBTZEUR.Base+resp.XXBTZEUR.Quote != XXBTZEUR {
-		t.Errorf("AssetPairs() should return valid response, got %+v", resp.XXBTZEUR)
+	if resp.Result["XXBTZEUR"].Base+resp.Result["XXBTZEUR"].Quote != "XXBTZEUR" {
+		t.Errorf("AssetPairs() should return valid response, got %+v", resp.Result["XXBTZEUR"])
 	}
 }
 
 func TestTicker(t *testing.T) {
-	resp, err := publicAPI.Ticker(XXBTZEUR, XXRPZEUR)
+	resp, err := publicAPI.Ticker("XXBTZEUR", "XXRPZEUR")
 	if err != nil {
 		t.Errorf("Ticker() should not return an error, got %s", err)
 	}
-
-	if resp.XXBTZEUR.OpeningPrice == 0 {
-		t.Errorf("Ticker() should return valid OpeningPrice, got %+v", resp.XXBTZEUR.OpeningPrice)
+	if resp.Result["XXBTZEUR"].OpeningPrice == 0 {
+		t.Errorf("Ticker() should return valid OpeningPrice, got %+v", resp.Result["XXBTZEUR"].OpeningPrice)
 	}
 }
 
@@ -92,18 +90,18 @@ func TestQueryTicker(t *testing.T) {
 }
 
 func TestQueryTrades(t *testing.T) {
-	result, err := publicAPI.Trades(XXBTZEUR, 1495777604391411290)
+	resp, err := publicAPI.Trades("XXBTZEUR", 1495777604391411290)
 
 	if err != nil {
 		t.Errorf("Trades should not return an error, got %s", err)
 	}
 
-	if result.Last == 0 {
+	if resp.Result.Last == 0 {
 		t.Errorf("Returned parameter `last` should always have a value...")
 	}
 
-	if len(result.Trades) > 0 {
-		for _, trade := range result.Trades {
+	if len(resp.Result.Trades) > 0 {
+		for _, trade := range resp.Result.Trades {
 			if trade.Buy == trade.Sell {
 				t.Errorf("Trade should be buy or sell")
 			}
@@ -117,22 +115,22 @@ func TestQueryTrades(t *testing.T) {
 func TestQueryDepth(t *testing.T) {
 	pair := "XETHZEUR"
 	count := 10
-	result, err := publicAPI.Depth(pair, count)
+	resp, err := publicAPI.Depth(pair, count)
 	if err != nil {
 		t.Errorf("Depth should not return an error, got %s", err)
 	}
 
-	resultType := reflect.TypeOf(result)
+	resultType := reflect.TypeOf(resp)
 
 	if resultType != reflect.TypeOf(&OrderBook{}) {
 		t.Errorf("Depth should return an OrderBook, got %s", resultType)
 	}
 
-	if len(result.Asks) > count {
-		t.Errorf("Asks length must be less than count , got %d > %d", len(result.Asks), count)
+	if len(resp.Asks) > count {
+		t.Errorf("Asks length must be less than count , got %d > %d", len(resp.Asks), count)
 	}
 
-	if len(result.Bids) > count {
-		t.Errorf("Bids length must be less than count , got %d > %d", len(result.Bids), count)
+	if len(resp.Bids) > count {
+		t.Errorf("Bids length must be less than count , got %d > %d", len(resp.Bids), count)
 	}
 }

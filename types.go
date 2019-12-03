@@ -8,80 +8,6 @@ import (
 )
 
 const (
-	ADACAD   = "ADACAD"
-	ADAETH   = "ADAETH"
-	ADAEUR   = "ADAEUR"
-	ADAUSD   = "ADAUSD"
-	ADAXBT   = "ADAXBT"
-	BCHEUR   = "BCHEUR"
-	BCHUSD   = "BCHUSD"
-	BCHXBT   = "BCHXBT"
-	DASHEUR  = "DASHEUR"
-	DASHUSD  = "DASHUSD"
-	DASHXBT  = "DASHXBT"
-	EOSETH   = "EOSETH"
-	EOSEUR   = "EOSEUR"
-	EOSUSD   = "EOSUSD"
-	EOSXBT   = "EOSXBT"
-	GNOETH   = "GNOETH"
-	GNOEUR   = "GNOEUR"
-	GNOUSD   = "GNOUSD"
-	GNOXBT   = "GNOXBT"
-	QTUMCAD  = "QTUMCAD"
-	QTUMETH  = "QTUMETH"
-	QTUMEUR  = "QTUMEUR"
-	QTUMUSD  = "QTUMUSD"
-	QTUMXBT  = "QTUMXBT"
-	USDTZUSD = "USDTZUSD"
-	XETCXETH = "XETCXETH"
-	XETCXXBT = "XETCXXBT"
-	XETCZEUR = "XETCZEUR"
-	XETCZUSD = "XETCZUSD"
-	XETHXXBT = "XETHXXBT"
-	XETHZCAD = "XETHZCAD"
-	XETHZEUR = "XETHZEUR"
-	XETHZGBP = "XETHZGBP"
-	XETHZJPY = "XETHZJPY"
-	XETHZUSD = "XETHZUSD"
-	XICNXETH = "XICNXETH"
-	XICNXXBT = "XICNXXBT"
-	XLTCXXBT = "XLTCXXBT"
-	XLTCZEUR = "XLTCZEUR"
-	XLTCZUSD = "XLTCZUSD"
-	XMLNXETH = "XMLNXETH"
-	XMLNXXBT = "XMLNXXBT"
-	XREPXETH = "XREPXETH"
-	XREPXXBT = "XREPXXBT"
-	XREPZEUR = "XREPZEUR"
-	XREPZUSD = "XREPZUSD"
-	XTZCAD   = "XTZCAD"
-	XTZETH   = "XTZETH"
-	XTZEUR   = "XTZEUR"
-	XTZUSD   = "XTZUSD"
-	XTZXBT   = "XTZXBT"
-	XXBTZCAD = "XXBTZCAD"
-	XXBTZEUR = "XXBTZEUR"
-	XXBTZGBP = "XXBTZGBP"
-	XXBTZJPY = "XXBTZJPY"
-	XXBTZUSD = "XXBTZUSD"
-	XXDGXXBT = "XXDGXXBT"
-	XXLMXXBT = "XXLMXXBT"
-	XXLMZEUR = "XXLMZEUR"
-	XXLMZUSD = "XXLMZUSD"
-	XXMRXXBT = "XXMRXXBT"
-	XXMRZEUR = "XXMRZEUR"
-	XXMRZUSD = "XXMRZUSD"
-	XXRPXXBT = "XXRPXXBT"
-	XXRPZCAD = "XXRPZCAD"
-	XXRPZEUR = "XXRPZEUR"
-	XXRPZJPY = "XXRPZJPY"
-	XXRPZUSD = "XXRPZUSD"
-	XZECXXBT = "XZECXXBT"
-	XZECZEUR = "XZECZEUR"
-	XZECZUSD = "XZECZUSD"
-)
-
-const (
 	BUY    = "b"
 	SELL   = "s"
 	MARKET = "m"
@@ -90,91 +16,24 @@ const (
 
 // KrakenResponse wraps the Kraken API JSON response
 type KrakenResponse struct {
-	Error  []string    `json:"error"`
-	Result interface{} `json:"result"`
+	Error []string `json:"error"`
 }
 
 // TimeResponse represents the server's time
 type TimeResponse struct {
-	// Unix timestamp
-	Unixtime int64
-	// RFC 1123 time format
-	Rfc1123 string
+	KrakenResponse
+	Result struct {
+		// Unix timestamp
+		Unixtime int `json:"unixtime"`
+		// RFC 1123 time format
+		Rfc1123 string `json:"rfc1123"`
+	} `json:"result"`
 }
 
 // AssetPairsResponse includes asset pair informations
 type AssetPairsResponse struct {
-	ADACAD   AssetPairInfo
-	ADAETH   AssetPairInfo
-	ADAEUR   AssetPairInfo
-	ADAUSD   AssetPairInfo
-	ADAXBT   AssetPairInfo
-	BCHEUR   AssetPairInfo
-	BCHUSD   AssetPairInfo
-	BCHXBT   AssetPairInfo
-	DASHEUR  AssetPairInfo
-	DASHUSD  AssetPairInfo
-	DASHXBT  AssetPairInfo
-	EOSETH   AssetPairInfo
-	EOSEUR   AssetPairInfo
-	EOSUSD   AssetPairInfo
-	EOSXBT   AssetPairInfo
-	GNOETH   AssetPairInfo
-	GNOEUR   AssetPairInfo
-	GNOUSD   AssetPairInfo
-	GNOXBT   AssetPairInfo
-	QTUMCAD  AssetPairInfo
-	QTUMETH  AssetPairInfo
-	QTUMEUR  AssetPairInfo
-	QTUMUSD  AssetPairInfo
-	QTUMXBT  AssetPairInfo
-	USDTZUSD AssetPairInfo
-	XETCXETH AssetPairInfo
-	XETCXXBT AssetPairInfo
-	XETCZEUR AssetPairInfo
-	XETCZUSD AssetPairInfo
-	XETHXXBT AssetPairInfo
-	XETHZCAD AssetPairInfo
-	XETHZEUR AssetPairInfo
-	XETHZGBP AssetPairInfo
-	XETHZJPY AssetPairInfo
-	XETHZUSD AssetPairInfo
-	XICNXETH AssetPairInfo
-	XICNXXBT AssetPairInfo
-	XLTCXXBT AssetPairInfo
-	XLTCZEUR AssetPairInfo
-	XLTCZUSD AssetPairInfo
-	XMLNXETH AssetPairInfo
-	XMLNXXBT AssetPairInfo
-	XREPXETH AssetPairInfo
-	XREPXXBT AssetPairInfo
-	XREPZEUR AssetPairInfo
-	XREPZUSD AssetPairInfo
-	XTZCAD   AssetPairInfo
-	XTZETH   AssetPairInfo
-	XTZEUR   AssetPairInfo
-	XTZUSD   AssetPairInfo
-	XTZXBT   AssetPairInfo
-	XXBTZCAD AssetPairInfo
-	XXBTZEUR AssetPairInfo
-	XXBTZGBP AssetPairInfo
-	XXBTZJPY AssetPairInfo
-	XXBTZUSD AssetPairInfo
-	XXDGXXBT AssetPairInfo
-	XXLMXXBT AssetPairInfo
-	XXLMZEUR AssetPairInfo
-	XXLMZUSD AssetPairInfo
-	XXMRXXBT AssetPairInfo
-	XXMRZEUR AssetPairInfo
-	XXMRZUSD AssetPairInfo
-	XXRPXXBT AssetPairInfo
-	XXRPZCAD AssetPairInfo
-	XXRPZEUR AssetPairInfo
-	XXRPZJPY AssetPairInfo
-	XXRPZUSD AssetPairInfo
-	XZECXXBT AssetPairInfo
-	XZECZEUR AssetPairInfo
-	XZECZUSD AssetPairInfo
+	KrakenResponse
+	Result map[string]AssetPairInfo `json:"result"`
 }
 
 // AssetPairInfo represents asset pair information
@@ -215,36 +74,7 @@ type AssetPairInfo struct {
 
 // AssetsResponse includes asset informations
 type AssetsResponse struct {
-	ADA  AssetInfo
-	BCH  AssetInfo
-	DASH AssetInfo
-	EOS  AssetInfo
-	GNO  AssetInfo
-	KFEE AssetInfo
-	QTUM AssetInfo
-	USDT AssetInfo
-	XDAO AssetInfo
-	XETC AssetInfo
-	XETH AssetInfo
-	XICN AssetInfo
-	XLTC AssetInfo
-	XMLN AssetInfo
-	XNMC AssetInfo
-	XREP AssetInfo
-	XXBT AssetInfo
-	XXDG AssetInfo
-	XXLM AssetInfo
-	XXMR AssetInfo
-	XXRP AssetInfo
-	XTZ  AssetInfo
-	XXVN AssetInfo
-	XZEC AssetInfo
-	ZCAD AssetInfo
-	ZEUR AssetInfo
-	ZGBP AssetInfo
-	ZJPY AssetInfo
-	ZKRW AssetInfo
-	ZUSD AssetInfo
+	Assets map[string]AssetInfo
 }
 
 // AssetInfo represents an asset information
@@ -260,36 +90,7 @@ type AssetInfo struct {
 }
 
 type BalanceResponse struct {
-	ADA  float64 `json:"ADA,string"`
-	BCH  float64 `json:"BCH,string"`
-	DASH float64 `json:"DASH,string"`
-	EOS  float64 `json:"EOS,string"`
-	GNO  float64 `json:"GNO,string"`
-	QTUM float64 `json:"QTUM,string"`
-	KFEE float64 `json:"KFEE,string"`
-	USDT float64 `json:"USDT,string"`
-	XDAO float64 `json:"XDAO,string"`
-	XETC float64 `json:"XETC,string"`
-	XETH float64 `json:"XETH,string"`
-	XICN float64 `json:"XICN,string"`
-	XLTC float64 `json:"XLTC,string"`
-	XMLN float64 `json:"XMLN,string"`
-	XNMC float64 `json:"XNMC,string"`
-	XREP float64 `json:"XREP,string"`
-	XXBT float64 `json:"XXBT,string"`
-	XXDG float64 `json:"XXDG,string"`
-	XXLM float64 `json:"XXLM,string"`
-	XXMR float64 `json:"XXMR,string"`
-	XXRP float64 `json:"XXRP,string"`
-	XTZ  float64 `json:"XTZ,string"`
-	XXVN float64 `json:"XXVN,string"`
-	XZEC float64 `json:"XZEC,string"`
-	ZCAD float64 `json:"ZCAD,string"`
-	ZEUR float64 `json:"ZEUR,string"`
-	ZGBP float64 `json:"ZGBP,string"`
-	ZJPY float64 `json:"ZJPY,string"`
-	ZKRW float64 `json:"ZKRW,string"`
-	ZUSD float64 `json:"ZUSD,string"`
+	Balances map[string]float64
 }
 
 type TradeBalanceResponse struct {
@@ -306,77 +107,8 @@ type TradeBalanceResponse struct {
 
 // TickerResponse includes the requested ticker pairs
 type TickerResponse struct {
-	ADACAD   PairTickerInfo
-	ADAETH   PairTickerInfo
-	ADAEUR   PairTickerInfo
-	ADAUSD   PairTickerInfo
-	ADAXBT   PairTickerInfo
-	BCHEUR   PairTickerInfo
-	BCHUSD   PairTickerInfo
-	BCHXBT   PairTickerInfo
-	DASHEUR  PairTickerInfo
-	DASHUSD  PairTickerInfo
-	DASHXBT  PairTickerInfo
-	EOSETH   PairTickerInfo
-	EOSEUR   PairTickerInfo
-	EOSUSD   PairTickerInfo
-	EOSXBT   PairTickerInfo
-	GNOETH   PairTickerInfo
-	GNOEUR   PairTickerInfo
-	GNOUSD   PairTickerInfo
-	GNOXBT   PairTickerInfo
-	QTUMCAD  PairTickerInfo
-	QTUMETH  PairTickerInfo
-	QTUMEUR  PairTickerInfo
-	QTUMUSD  PairTickerInfo
-	QTUMXBT  PairTickerInfo
-	USDTZUSD PairTickerInfo
-	XETCXETH PairTickerInfo
-	XETCXXBT PairTickerInfo
-	XETCZEUR PairTickerInfo
-	XETCZUSD PairTickerInfo
-	XETHXXBT PairTickerInfo
-	XETHZCAD PairTickerInfo
-	XETHZEUR PairTickerInfo
-	XETHZGBP PairTickerInfo
-	XETHZJPY PairTickerInfo
-	XETHZUSD PairTickerInfo
-	XICNXETH PairTickerInfo
-	XICNXXBT PairTickerInfo
-	XLTCXXBT PairTickerInfo
-	XLTCZEUR PairTickerInfo
-	XLTCZUSD PairTickerInfo
-	XMLNXETH PairTickerInfo
-	XMLNXXBT PairTickerInfo
-	XREPXETH PairTickerInfo
-	XREPXXBT PairTickerInfo
-	XREPZEUR PairTickerInfo
-	XREPZUSD PairTickerInfo
-	XXBTZCAD PairTickerInfo
-	XXBTZEUR PairTickerInfo
-	XXBTZGBP PairTickerInfo
-	XXBTZJPY PairTickerInfo
-	XXBTZUSD PairTickerInfo
-	XXDGXXBT PairTickerInfo
-	XXLMXXBT PairTickerInfo
-	XXLMZEUR PairTickerInfo
-	XXLMZUSD PairTickerInfo
-	XXMRXXBT PairTickerInfo
-	XXMRZEUR PairTickerInfo
-	XXMRZUSD PairTickerInfo
-	XXRPXXBT PairTickerInfo
-	XXRPZCAD PairTickerInfo
-	XXRPZEUR PairTickerInfo
-	XXRPZJPY PairTickerInfo
-	XXRPZUSD PairTickerInfo
-	XTZCAD   PairTickerInfo
-	XTZETH   PairTickerInfo
-	XTZEUR   PairTickerInfo
-	XTZUSD   PairTickerInfo
-	XTZXBT   PairTickerInfo
-	XZECXXBT PairTickerInfo
-	XZECZEUR PairTickerInfo
-	XZECZUSD PairTickerInfo
+	KrakenResponse
+	Result map[string]PairTickerInfo `json:"result"`
 }
 
 // DepositAddressesResponse is the response type of a DepositAddresses query to the Kraken API.
@@ -431,8 +163,11 @@ type PairTickerInfo struct {
 
 // TradesResponse represents a list of the last trades
 type TradesResponse struct {
-	Last   int64
-	Trades []TradeInfo
+	KrakenResponse
+	Result struct {
+		Last   int `json:"last,string"`
+		Trades map[string]TradeInfo
+	} `json:"result"`
 }
 
 // TradesHistoryResponse represents a list executed trade
@@ -458,16 +193,16 @@ type TradeHistoryInfo struct {
 
 // TradeInfo represents a trades information
 type TradeInfo struct {
-	Price         string
-	PriceFloat    float64
-	Volume        string
-	VolumeFloat   float64
-	Time          int64
+	Price         float64 `json:"0",string`
+	Volume        float64 `json:"1",string`
+	Time          float64 `json:"2"`
+	BuySell       string  `json:"3"`
+	MarketLimit   string  `json:"4"`
 	Buy           bool
 	Sell          bool
 	Market        bool
 	Limit         bool
-	Miscellaneous string
+	Miscellaneous string `json:"5"`
 }
 
 // LedgersResponse represents an associative array of ledgers infos
@@ -576,12 +311,15 @@ func (o *OrderBookItem) UnmarshalJSON(data []byte) error {
 }
 
 // DepthResponse is a response from kraken to Depth request.
-type DepthResponse map[string]OrderBook
+type DepthResponse struct {
+	KrakenResponse
+	Result map[string]OrderBook `json:"result"`
+}
 
 // OrderBook contains top asks and bids.
 type OrderBook struct {
-	Asks []OrderBookItem
-	Bids []OrderBookItem
+	Asks []OrderBookItem `json:"asks"`
+	Bids []OrderBookItem `json:"bids"`
 }
 
 type OpenOrdersResponse struct {

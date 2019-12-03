@@ -176,50 +176,28 @@ func (api *KrakenApi) Trades(pair string, since int64) (*TradesResponse, error) 
 	if since > 0 {
 		values.Set("since", strconv.FormatInt(since, 10))
 	}
-	resp, err := api.queryPublic("Trades", values, nil)
+	resp, err := api.queryPublic("Trades", values, &TradesResponse{})
 	if err != nil {
 		return nil, err
 	}
 
-	v := resp.(map[string]interface{})
+	v := resp.(*TradesResponse)
 
-	last, err := strconv.ParseInt(v["last"].(string), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-
-	result := &TradesResponse{
-		Last:   last,
-		Trades: make([]TradeInfo, 0),
-	}
-
-	trades := v[pair].([]interface{})
-	for _, v := range trades {
-		trade := v.([]interface{})
-
-		priceString := trade[0].(string)
-		price, _ := strconv.ParseFloat(priceString, 64)
-
-		volumeString := trade[1].(string)
-		volume, _ := strconv.ParseFloat(trade[1].(string), 64)
-
+	for k, trade := range v.Result.Trades {
 		tradeInfo := TradeInfo{
-			Price:         priceString,
-			PriceFloat:    price,
-			Volume:        volumeString,
-			VolumeFloat:   volume,
-			Time:          int64(trade[2].(float64)),
-			Buy:           trade[3].(string) == BUY,
-			Sell:          trade[3].(string) == SELL,
-			Market:        trade[4].(string) == MARKET,
-			Limit:         trade[4].(string) == LIMIT,
-			Miscellaneous: trade[5].(string),
+			Price:         trade.Price,
+			Volume:        trade.Volume,
+			Time:          trade.Time,
+			Buy:           trade.BuySell == BUY,
+			Sell:          trade.BuySell == SELL,
+			Market:        trade.MarketLimit == MARKET,
+			Limit:         trade.MarketLimit == LIMIT,
+			Miscellaneous: trade.Miscellaneous,
 		}
-
-		result.Trades = append(result.Trades, tradeInfo)
+		v.Result.Trades[k] = tradeInfo
 	}
 
-	return result, nil
+	return v, nil
 }
 
 // Balance returns all account asset balances
@@ -309,7 +287,7 @@ func (api *KrakenApi) Depth(pair string, count int) (*OrderBook, error) {
 		return nil, err
 	}
 
-	if book, found := dr[pair]; found {
+	if book, found := dr.Result[pair]; found {
 		return &book, nil
 	}
 
@@ -488,8 +466,8 @@ func (api *KrakenApi) Query(method string, data map[string]string) (interface{},
 // Execute a public method query
 func (api *KrakenApi) queryPublic(method string, values url.Values, typ interface{}) (interface{}, error) {
 	url := fmt.Sprintf("%s/%s/public/%s", APIURL, APIVersion, method)
-	resp, err := api.doRequest(url, values, nil, typ)
 
+	resp, err := api.doRequest(url, values, nil, typ)
 	return resp, err
 }
 
@@ -516,7 +494,6 @@ func (api *KrakenApi) queryPrivate(method string, values url.Values, typ interfa
 
 // doRequest executes a HTTP Request to the Kraken API and returns the result
 func (api *KrakenApi) doRequest(reqURL string, values url.Values, headers map[string]string, typ interface{}) (interface{}, error) {
-
 	// Create request
 	req, err := http.NewRequest("POST", reqURL, strings.NewReader(values.Encode()))
 	if err != nil {
@@ -550,26 +527,12 @@ func (api *KrakenApi) doRequest(reqURL string, values url.Values, headers map[st
 		return nil, fmt.Errorf("Could not execute request #5! (%s)", fmt.Sprintf("Response Content-Type is '%s', but should be 'application/json'.", mimeType))
 	}
 
-	// Parse request
-	var jsonData KrakenResponse
-
-	// Set the KrakenResponse.Result to typ so `json.Unmarshal` will
-	// unmarshal it into given type, instead of `interface{}`.
-	if typ != nil {
-		jsonData.Result = typ
-	}
-
-	err = json.Unmarshal(body, &jsonData)
+	err = json.Unmarshal(body, &typ)
 	if err != nil {
 		return nil, fmt.Errorf("Could not execute request! #6 (%s)", err.Error())
 	}
 
-	// Check for Kraken API error
-	if len(jsonData.Error) > 0 {
-		return nil, fmt.Errorf("Could not execute request! #7 (%s)", jsonData.Error)
-	}
-
-	return jsonData.Result, nil
+	return typ, nil
 }
 
 // isStringInSlice is a helper function to test if given term is in a list of strings
